@@ -36,17 +36,34 @@ bind.submit=function(e){
 ```
 
 ---
-### Features
-- 
+### Installation
 
-And so much more, all under `30kb`. **Interested?**
+Add Spectre to your `index.html`, then add a reference to your entry file via the main method.
+###### index.html:
+```html
+<html>
+  <script src="https://spectrejs.github.io/spectre.js" >
+    {
+      "main":"/entry.html"
+    }
+  </script>
+</html>
+```
 
-Learn more [here](https://playscript.dev).
+Then add your code or one of the examples above to the `entry.html` file, thats about it!
+##### entry.html:
+```html
+<p @format=greet> hello {planet}! Im {name}</p>
+<script>
+  bind.greet={
+    planet:"earth",
+    name:"Faizle"
+  }
+</script>
+```
+
+Learn more [here](https://spectrejs.github.io).
 
 ---
 ### Author
-Faizel Dealdrey Garoeb
-
-email - <dealdreygaroeb@gmail.com>
-
-happy coding!
+Faizel Dealdrey Garoebe<br/>email - <dealdreygaroeb@gmail.com><br/>happy coding!
