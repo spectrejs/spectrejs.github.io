@@ -20,7 +20,7 @@ bind.submit=function(e){
 </script>
 
 <card .sponsors @format=sponsor>
-  <img src={avatar} />
+  
   <p>{name}</p>
 </card>
 

@@ -1,8 +1,10 @@
+document.open()
 window.node={};
 window.bind;
 
 //set spectre manifest
 window.manifest=JSON.parse(document.currentScript.innerHTML||"{}")
+manifest.src=document.currentScript.src
 
 //set web manifest
 window.webmanifest={
@@ -23,7 +25,7 @@ window.webmanifest={
   document.head.appendChild(scri)
 })()
 
-Promise.all(["/parse/core.js","/build/core.js"].map(e=>import(e)))
+Promise.all(["/parse/core.js","/build/core.js"].map(e=>import(new URL(e,manifest.src))))
 .then(async e=>{
  window._app=Object.assign({},...e)
  //get entry shard - build entry
@@ -31,12 +33,12 @@ Promise.all(["/parse/core.js","/build/core.js"].map(e=>import(e)))
  shard=await shard.text().catch(e=>location.reload())
  shard=_app.parse(shard)
  
-  document.write(await _app.buildFront(shard))
+  document.write(_app.buildFront(shard))
   /*bind ids to the node object*/_app.idnode()
   shard.nodes=[...document.body.querySelectorAll("*")]
   _app.scripts=await _app.buildBack(shard)
+  scr=()=>{}
   document.close()
-  scr=e=>{}
   if ("serviceWorker" in navigator) navigator.serviceWorker.register(manifest["service worker"] || "/sw.js").catch(e=>console.log('No service worker detected, you can use the default service worker at https://spectrejs.github.io/sw.js .'))
 
 }).catch(e=>location.reload())

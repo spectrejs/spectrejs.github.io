@@ -5,6 +5,7 @@ import scripts from "./script.js"
 export  function parse(code){
   //list all elements
   let body=document.createElement("body")
+  body.style.display="none"
   body.innerHTML=code
   let list=[...body.querySelectorAll("*")]
   

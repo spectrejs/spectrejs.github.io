@@ -2,8 +2,8 @@ import { match } from "./reactive.js"
 
 
 
-export async function buildFront(shard){
-  let page=`<!DOCTYPE html><html lang=en ><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="${manifest.color||"#e91e63"}"><link rel="manifest" href="data:application/json;base64,${btoa(JSON.stringify(webmanifest))}">`
+export function buildFront(shard){
+  let page=`<!DOCTYPE html><html lang=en ><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="${manifest.color||"#e91e63"}"><link rel="apple-touch-icon" href="${manifest.icon||"/favicon.ico"}"><link rel="manifest" href="data:application/json;base64,${btoa(JSON.stringify(webmanifest))}">`
   page+=`<title>${manifest.title||"Spectre App"}</title>`
   page+=`</head>${shard.body.outerHTML}</html>`
   return page
@@ -45,5 +45,5 @@ export async function buildBack(shard){
     }
   })
  await Promise.all(shard.script.map(e=>import(e)))
- 
+ document.body.style.display="block"
 }
