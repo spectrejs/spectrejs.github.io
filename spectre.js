@@ -12,20 +12,8 @@ window.webmanifest={
   display:manifest.display||"standalone",
   background_color:manifest.background||"#fff",
   theme_color:manifest.color||"#e91e63",
-  description:manifest.description||"Powered by SpectreJS",
-  icons: [
-    {
-      src: manifest.icon || location.origin + "/favicon.ico",
-      sizes: "192x192",
-      type: "image/png"
-        },
-    {
-      src: manifest.icon || location.origin + "/favicon.ico",
-      sizes: "512x512",
-      type: "image/png",
-      purpose: "any maskable"
-        }
-        ]
+  description:manifest.desc||"Powered by SpectreJS",
+  icons: [{src: manifest.icon || location.origin + "/favicon.ico",sizes: "192x192",type: "image/png"},{src: manifest.icon || location.origin + "/favicon.ico",sizes: "512x512",type: "image/png",purpose: "any maskable"}]
 }
 
 ;(function scr(){
@@ -49,7 +37,7 @@ Promise.all(["/parse/core.js","/build/core.js"].map(e=>import(e)))
   _app.scripts=await _app.buildBack(shard)
   document.close()
   scr=e=>{}
-  if ("serviceWorker" in navigator) navigator.serviceWorker.register(manifest["service worker"] || "/sw.js").catch(console.error)
+  if ("serviceWorker" in navigator) navigator.serviceWorker.register(manifest["service worker"] || "/sw.js").catch(e=>console.log('No service worker detected, you can use the default service worker at https://spectrejs.github.io/sw.js .'))
 
 }).catch(e=>location.reload())
 
