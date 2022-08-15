@@ -1,13 +1,4 @@
-export let match = function(nodes,key,val){
-  nodes.forEach(e=>{
-    special(e,key).forEach(x=>{
-      //event specials
-      if(x.startsWith("on:"))specials.on(e,x.replace("on:","").split(".")[0],val,x.split(".")[1])
-      //bound specials
-      if(specials[x])specials[x](e,val)
-    })
-  })
-  }
+
 
 function special(node,key){
    return [...node.attributes].map(e=>e.name).filter(e=>e.startsWith("@")).filter(e=>node.getAttribute(e)==key).map(e=>e.replace("@",""))
@@ -17,11 +8,17 @@ const specials={
   text(el,val){
     el.innerText=val
   },
+  html(el,val){
+    el.innerHTML=val
+  },
   on(el,event,val,prev){
     el.addEventListener(event,function(a,b){
       if(prev)a.preventDefault()
       val(a,b)
     })
+  },
+  style(el,style,val,prev){
+    el.style[style]=val
   },
   list(el,list){
     let temp=el.getAttribute("template")||"<div>undefined</div>"
@@ -71,5 +68,19 @@ const specials={
 
       return result
     }
+  })
+}
+
+
+return function match(key, val) {
+  [...document.body.querySelectorAll("*")].forEach(e => {
+    special(e, key).forEach(x => {
+      //event specials
+      if (x.startsWith("on:")) specials.on(e, x.replace("on:", "").split(".")[0], val, x.split(".")[1])
+      //style specials
+      if(x.startsWith("style:"))specials.style(e,x.replace("style:",""),val)
+      //bound specials
+      if (specials[x]) specials[x](e, val)
+    })
   })
 }

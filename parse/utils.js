@@ -1,22 +1,19 @@
-function getAttr(e){
-  return [...e.attributes].map(e=>e.name)
-}
+const getAttr=e=>[...e.attributes].map(e=>e.name)
 
-export function id(nodes){
+return {
+  id(nodes){
   nodes.forEach(e=>{
     getAttr(e).forEach(x=>{
       if(x.startsWith("#")){
         e.removeAttribute(x)
         e.id=x.replace("#","")
-        node[e.id]=e.id
       }
     })
-    
-    
   })
-}
+  return this
+},
 
-export function type(nodes){
+type(nodes){
   nodes.forEach(e=>{
     getAttr(e).forEach(x=>{
       if(x.startsWith("::")){
@@ -27,22 +24,25 @@ export function type(nodes){
     
     
   })
-}
+  return this
+},
 
-
-export function list(nodes){
+list(nodes){
+  let temps=[]
   nodes.forEach(e=>{
     getAttr(e).forEach(x=>{
       if(x.startsWith("@list")||x.startsWith("@format")){
         e.setAttribute("template",e.innerHTML)
+        temps.push(e.innerHTML)
         e.innerHTML=""
       }
       
     })
   })
-}
+  return temps
+},
 
-export function css(nodes){
+css(nodes){
   nodes.forEach(e=>{
     getAttr(e).forEach(x=>{
       if(x.startsWith("-")){
@@ -51,9 +51,10 @@ export function css(nodes){
       }
     })
   })
-}
+  return this
+},
 
-export function classy(nodes){
+classy(nodes){
   nodes.forEach(e => {
         getAttr(e).forEach(x => {
           if (x.startsWith(".")) {
@@ -63,4 +64,24 @@ export function classy(nodes){
         })
         
   })
+  return this
+},
+
+scriptSrc(nodes){
+  return nodes.filter(e=>e.tagName.toLowerCase()=="script"&&e.src).map(e=>{e.remove();return e.src})},
+script(nodes){
+  return nodes.filter(e=>e.tagName.toLowerCase()=="script"&&!e.src).map(e=>{e.remove();return e.innerHTML})
+},
+
+styleSrc(nodes){
+  return nodes.filter(e=>e.tagName.toLowerCase()=="link"&&e.rel=="stylesheet").map(e=>{e.remove();return e.href})},
+style(nodes){
+  return nodes.filter(e=>e.tagName.toLowerCase()=="style").map(e=>{e.remove();return e.innerHTML})
+},
+
+node(){
+  window.node=Object.assign({},...[...document.querySelectorAll("[id]")].map(e=>{return {[e.id]:e}}))
+}
+
+
 }

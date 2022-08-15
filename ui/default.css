@@ -1,0 +1,24 @@
+*{
+  box-sizing:border-box
+}
+body{
+  border:0;
+  margin:0;
+  padding:0;
+  position:relative;
+  height:100%;
+  width:100%;
+  overflow: auto;
+  
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  align-content:flex-start;
+  justify-content:flex-start;
+  flex:none;
+  
+  background:var(--background);
+  color:var(--text);
+  
+  
+}

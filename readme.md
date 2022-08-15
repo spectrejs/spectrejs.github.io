@@ -66,4 +66,4 @@ Learn more [here](https://spectrejs.github.io).
 
 ---
 ### Author
-Faizel Dealdrey Garoebe<br/>email - <dealdreygaroeb@gmail.com><br/>happy coding!
+Faizel Dealdrey Garoeb<br/>email - <dealdreygaroeb@gmail.com><br/>happy coding!
