@@ -80,7 +80,7 @@ style(nodes){
 },
 
 node(){
-  window.node=Object.assign({},...[...document.querySelectorAll("[id]")].map(e=>{return {[e.id]:e}}))
+  app.node=Object.assign({},...[...document.querySelectorAll("[id]")].map(e=>{return {[e.id]:e}}))
 }
 
 

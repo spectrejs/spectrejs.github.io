@@ -8,7 +8,18 @@ flex,.flex{
   flex:none
 }
 
+flex[flow="row"],.flex[flow="row"]{
+  flex-direction:row;
+}
+flex[flow="column"],.flex[flow="column"]{
+  flex-direction:column;
+}
+flex[flow="row-reverse"],.flex[flow="row-reverse"]{
+  flex-direction:row-reverse;
+}
+flex[flow="column-reverse"],.flex[flow="column-reverse"]{
+  flex-direction:row;
+}
 
-
-
-
+flex[scroll=""],flex[scroll="true"],.flex[scroll=""],.flex[scroll="true"]{ overflow:auto; }
+flex[scroll="false"],.flex[scroll="false"]{ overflow:hidden; }

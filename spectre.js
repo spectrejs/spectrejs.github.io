@@ -1,4 +1,5 @@
 document.open()
+const app={}
 //set spectre manifest
 window.manifest=JSON.parse(document.currentScript.innerHTML||"{}")
 manifest.src=document.currentScript.src
@@ -43,12 +44,9 @@ scripts("/setup.js","/parse/parse.js","/parse/utils.js","/build/build.js","/buil
  shard=e.parse(shard)
  shard.style=[...shard.style,...await e.sui(shard)]
  document.write(e.build.front(shard))
- /*map id based nodes*/e.utils.node()
- //start app
- await e.build.back(shard)
+ /*parse inline scripts on document ready*/window.onload=async ()=>{e.utils.node();e.build.back(shard)}
   loadDelay=()=>{}
   document.close()
-  
   
   if ("serviceWorker" in navigator) navigator.serviceWorker.register(manifest["service worker"] || "/sw.js").catch(e=>console.log('No service worker detected, you can use the default service worker at https://spectrejs.github.io/sw.js .'))
 })
