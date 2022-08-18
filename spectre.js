@@ -1,52 +1,65 @@
 document.open()
-const app={}
+const app={node:{}}
 //set spectre manifest
 window.manifest=JSON.parse(document.currentScript.innerHTML||"{}")
 manifest.src=document.currentScript.src
 
 //delay load complete
-function loadDelay(){
+;(window.loadDelay=()=>{
   let scri=document.createElement("script")
   scri.src="data:text/javascript;base64,"+btoa("")
   scri.onload=e=>{scri.remove();loadDelay()}
-  document.head.appendChild(scri)}
-loadDelay()
+  document.head.appendChild(scri)})()
 
+//generate asset fetcher
+function requestFactory(base=location.href){
+  return async function request(path,opt={}){
+    let module=await fetch(new URL(path,opt.base||base).href).catch(()=>null)
+  if(module===null)return await request(path,opt)
+  let status=module.status
+  module=await module.arrayBuffer().catch(()=>null)
+  if(module===null)return await request(path,opt)
+  const blob = new Blob([module])
+  const text = await blob.text().catch(e => "")
+  let json;
+  try { json = JSON.parse(text) } catch (e) { json = {} }
+  return { status, blob, text, json, url:new URL(path,opt.base||base).href }
+  }
+}
 //Generates a module importer
-function scriptFactory(base=location.href){
+function scriptFactory(request){
   return async function script(path,opt={}){
-  let module=await fetch(new URL(path,base).href).catch(()=>null)
-  /*fetch failed retry*/if(module===null)return await script(path,base)
-  module=await module.text().catch(()=>null)
-  /*fetch failed retry*/if(module===null)return await script(path,base)
-  if(opt.as!=="text")module=await Function(`return async (base)=>{
-    const script=scriptFactory(base);
+    const {text, url}=await request(path,opt)
+  return await Function(`return async (base)=>{
+    const request=requestFactory(base)
+    const script=scriptFactory(request);
     const scripts=sxFactory(script);
-    ${module}
+    ${text};
     return null
-  }`)()(new URL(path,base).href).catch(console.error)
-  return module
+  }`)()(url).catch(console.error)
 }}
 
 //for multiple modules
-function sxFactory(cs){ return async function scripts(/*paths*/){ let dn=[...arguments].map(e=>(e.split("/").pop()||"").split(".")[0]); let mods=await Promise.all([...arguments].map(e=>cs(e))); return Object.assign({},...mods.map((v,i)=>{return {[typeof v=="function"&&v.name?v.name:dn[i]]:v}})) }}
+function sxFactory(cs){ return async function scripts(){ let dn=[...arguments].map(e=>(e.split("/").pop()||"").split(".")[0]); let mods=await Promise.all([...arguments].map(e=>cs(e))); return Object.assign({},...mods.map((v,i)=>{return {[typeof v=="function"&&v.name?v.name:dn[i]]:v}})) }}
 
 
-const script=scriptFactory(document.currentScript.src)
+const request=requestFactory(document.currentScript.src)
+const script=scriptFactory(request)
 const scripts=sxFactory(script)
 
-scripts("/setup.js","/parse/parse.js","/parse/utils.js","/build/build.js","/build/reactive.js","/sui.js")
+scripts("/init/setup.js","/init/bind.js","/init/match.js","/init/load.js","/init/parse.js","/init/utils.js","/init/mutants.js","/ui/sui.js")
 .then(async e=>{
+  //shadow app defaults
   window._app=e
- //get entry shard - build entry
- let shard=await fetch(manifest.main||"/index.shard").catch(e=>location.reload())
- shard=await shard.text().catch(e=>location.reload())
- shard=e.parse(shard)
- shard.style=[...shard.style,...await e.sui(shard)]
- document.write(e.build.front(shard))
- /*parse inline scripts on document ready*/window.onload=async ()=>{e.utils.node();e.build.back(shard)}
+  /*save states for back navigation*/_app.state=[]
+  /*immediate view while pages load*/_app.onload=`<style>body{background:var(--background);display:flex;align-items:center;justify-content:center;height:100vh}@keyframes spin{to{transform:rotate(359deg)}}</style><svg fill=var(--color) -transform=rotate(0deg) -animation="spin 800ms linear infinite" .loading width=60 height=60 viewBox="0 0 24.00 24.00"><path d="M12 4V2C6.5 2 2 6.5 2 12h2c0-4.4 3.6-8 8-8z"/></svg>`
+  app.load=_app.load
+ //create basic app shell
+ document.write(`<!DOCTYPE html><html lang=en style="--color:${manifest.color||"#e91e63"};--background:${manifest.background||"#fff"};--shadow:${manifest.shadow||"#00000020"};--text:${manifest["text"]||"#454545"}"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="${manifest.color||"#e91e63"}"><link rel="apple-touch-icon" href="${manifest.icon||"/favicon.ico"}"><link rel="manifest" href="data:application/json;base64,${btoa(JSON.stringify(webmanifest))}"><title>${manifest.title||"Spectre App"}</title></head></html> `)
+ 
+ //parse inline scripts on document ready
+ window.onload=async ()=>{/*handle on back press*/window.onpopstate=()=>{document.body.innerText="";(_app.state.pop()||[]).map(e=>document.body.append(e))};/*spy on mutations*/_app.tmnt(document.body);/*load entry file*/_app.load(manifest.main||"index.shard",{flags:"stateless"})}
   loadDelay=()=>{}
   document.close()
   
-  if ("serviceWorker" in navigator) navigator.serviceWorker.register(manifest["service worker"] || "/sw.js").catch(e=>console.log('No service worker detected, you can use the default service worker at https://spectrejs.github.io/sw.js .'))
 })

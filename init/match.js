@@ -33,7 +33,8 @@ const specials={
   },
   
   format(el,obj){
-    el.innerHTML=template(el.getAttribute("template"),obj)
+    if(el.getAttribute("template").includes("{@self}"))el.innerHTML=el.getAttribute("template").replace("{@self}",String(obj))
+    else el.innerHTML=template(el.getAttribute("template"),obj)
   }
 }
 

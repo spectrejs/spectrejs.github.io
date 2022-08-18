@@ -34,7 +34,11 @@ bar.pill,.bar.pill{
 }
 
 
-
+bar.underline,.bar.underline{
+  border-bottom:2px solid var(--color);
+  color:var(--color);
+  background:var(--background);
+}
 bar.outline,.bar.outline{
   border:2px solid var(--color);
   color:var(--color);
@@ -45,4 +49,14 @@ bar.solid,.bar.solid{
   background:var(--color);}
 bar.shadow,.bar.shadow{
   box-shadow:0px 0px 4px 4px var(--shadow);
+}
+
+bar>icon,.bar>icon{
+  width:30px;
+  height:30px;
+  margin:5px;
+}
+
+bar>text,bar>input,.bar>text,.bar>input{
+  margin-right:auto;
 }

@@ -4,14 +4,15 @@ A **Tiny** and **Powerful** front-end JavaScript framework for building amazing 
 
 ##### Example:
 ```html
- <button @on:click=increase>+</button>
- <p @text=counter></p>
- <button @on:click=decrease>-</button>
+  <button @on:click=increase>add</button>
+  <p @format=counter>current value: {@self}</p>
+  <button @on:click=decrease>minus</button>
+ 
  
  <script>
-   bind.counter=0
-   bind.increase=()=>bind.counter++
-   bind.decrease=()=>bind.counter--
+   app.bind.counter=0
+   app.bind.increase=()=>app.bind.counter++
+   app.bind.decrease=()=>app.bind.counter--
  </script>
 ```
 
@@ -27,13 +28,24 @@ A **Tiny** and **Powerful** front-end JavaScript framework for building amazing 
 </form>
 
 <script>
-bind.todolist=[]
-bind.submit=function(e){
-  bind.todolist.push(node.todo.value)
-  node.todo.value=""
+app.bind.todolist=[]
+app.bind.submit=function(e){
+  app.bind.todolist.push(app.node.todo.value)
+  app.node.todo.value=""
 }
 </script>
 ```
+
+---
+### Features
+- Declarative af
+- Auto PWA enhanced
+- Inbuilt page pre-fetch
+- 50+ custom components
+- 2/w data binding
+- Responsive design
+
+and so much more under `30kb`, **interested?**
 
 ---
 ### Installation

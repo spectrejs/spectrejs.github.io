@@ -1,9 +1,3 @@
-/*
-SPECTRE UI
-md inspired
-© 2022
-
-*/
 
 
 let ae=["flex","text","button","img","bar"]

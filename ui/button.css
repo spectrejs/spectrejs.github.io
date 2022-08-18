@@ -5,7 +5,9 @@ button,.button{
   color:#fff;
   border: 0px solid transparent;
   border-radius:10px;
-  
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 
 button.silent,.button.silent{
@@ -35,4 +37,11 @@ button.fab,.button.fab{
   
   font-weight:bold;
   font-size:1.3rem;
+}
+
+
+/*icons in button*/
+button>icon,button>.icon,.button>icon,.button>.icon{
+  width:16px;
+  height:16px;
 }
