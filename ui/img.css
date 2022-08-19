@@ -1,0 +1,7 @@
+img{
+  object-fit:center;
+}
+
+img.round{
+  border-radius:100%;
+}

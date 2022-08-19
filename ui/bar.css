@@ -60,3 +60,9 @@ bar>icon,.bar>icon{
 bar>text,bar>input,.bar>text,.bar>input{
   margin-right:auto;
 }
+
+bar>img,.bar>img{
+  margin:5px;
+  width:35px;
+  height:35px;
+}
