@@ -5,20 +5,20 @@ An amazingly **Tiny** and **Powerful** front-end JavaScript framework for buildi
 ##### Counter app:
 ```html
   <button on:click=increase>add</button>
-  <p format=counter>current value: {@self}</p>
+  <p format=count>current value: {*}</p>
   <button on:click=decrease>minus</button>
  
  
  <script>
-   app.format.counter=0
-   app.on("increase",()=>app.format.counter++)
-   app.on("decrease",()=>app.format.counter--)
+   app.format("count",0)
+   app.on("increase",()=>app.edit("count","++"))
+   app.on("decrease",()=>app.edit("count","--"))
  </script>
 ```
 
 ##### Todo list:
 ```html
-<ul list=todolist>
+<ul format=list>
   <li>{*}</li>
 </ul>
 
@@ -28,9 +28,9 @@ An amazingly **Tiny** and **Powerful** front-end JavaScript framework for buildi
 </form>
 
 <script>
-app.list.todolist=[]
+app.format("list",[])
 app.on("submit",()=>{
-  app.list.todolist.push(app.id("todo").value)
+  app.edit("list","push",app.id("todo").value)
   app.id("todo").value=""
 })
 </script>
@@ -52,13 +52,7 @@ Add Spectre to your `index.html`, then add a reference to your entry file via th
 ```
 
 Then add your code or one of the examples above to the `entry.html` file, thats about it!
-##### entry.html:
-```html
-<p bind:text=text></p>
-<script>
-  app.bind.text="hello spectre!"
-</script>
-```
+
 
 Learn more [here](https://spectrejs.github.io).
 

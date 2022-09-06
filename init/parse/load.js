@@ -10,9 +10,8 @@ default state based scopes apply
 return function load(el,deep){
   Object.keys(_getAttr(el))
     .forEach(e => {
-      if (e=="load") {
-        el.onclick=()=>_app.load(el.getAttribute("load"))
-      }
+      if (e=="load")el.onclick=()=>_app.load(el.getAttribute("load"))
+      if(e=="load:stateless")el.onclick=()=>_app.load(el.getAttribute("load:stateless"),{flags:"stateless"})
     })
   if (deep)[...el.children].map(function(e) { load(e, true) })
 }

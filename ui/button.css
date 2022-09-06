@@ -1,7 +1,7 @@
 button,.button{
   margin:5px;
   padding:8px;
-  background:var(--color);
+  background:var(--accent);
   color:#fff;
   border: 0px solid transparent;
   border-radius:10px;
@@ -11,14 +11,22 @@ button,.button{
 }
 
 button.silent,.button.silent{
-  color:var(--color);
+  color:var(--accent);
   background: transparent;
 }
 
 button.outline,.button.outline{
-  color:var(--color);
+  color:var(--accent);
   background: transparent;
-  border:2px solid var(--color);
+  border:2px solid var(--accent);
+}
+
+button.pill,.button.pill{
+  border-radius:999px;
+}
+
+button.background,.button.background{
+  background:var(--background);
 }
 
 button:hover,.button:hover{
@@ -45,4 +53,9 @@ button>icon,button>.icon,.button>icon,.button>.icon{
   width:15px;
   height:15px;
   margin:2px;
+}
+
+button.fab>icon,.button.fab>icon{
+  width:20px;
+  height:20px;
 }

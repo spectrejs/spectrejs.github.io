@@ -10,7 +10,8 @@ return function type(el,deep){
   Object.keys(_getAttr(el))
     .forEach(e => {
       if (e.startsWith("::")) {
-        el.type=e.replace("::", "")
+        if("type" in el)el.type=e.replace("::", "")
+        else el.setAttribute("type",e.replace("::",""))
         el.removeAttribute(e)
       }
     })

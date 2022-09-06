@@ -41,42 +41,46 @@ function scriptFactory(request){
 }}
 
 //for multiple modules
-function sxFactory(cs){ return async function scripts(){ let dn=[...arguments].map(e=>(e.split("/").pop()||"").split(".")[0]); let mods=await Promise.all([...arguments].map(e=>cs(e))); return Object.assign({},...mods.map((v,i)=>{return {[typeof v=="function"&&v.name?v.name:dn[i]]:v}})) }}
+function sxFactory(cs){ return async function scripts(){ let dn=[...arguments].filter(e=>e).map(e=>(e.split("/").pop()||"").split(".")[0]); let mods=await Promise.all([...arguments].filter(e=>e).map(e=>cs(e))); return Object.assign({},...mods.map((v,i)=>{return {[typeof v=="function"&&v.name?v.name:dn[i]]:v}})) }}
 
 
 const request=requestFactory(document.currentScript.src)
 const script=scriptFactory(request)
 const scripts=sxFactory(script)
 
-scripts("/init/setup.js","/init/bind.js","/init/match.js","/init/load.js","/init/mutants.js","/ui/sui.js")
+scripts(...[manifest.console=="eruda"?"/eruda.min.js":""],"/init/setup.js","/init/load.js","/init/mutants.js","/ui/sui.js","/init/format.js","/init/select.js")
 .then(async e=>{
+  
   //shadow app defaults
   window._app=e
+  _app.format={}
+  _app.edited={}
+  _app.events={}
   /*save states for back navigation*/_app.state=[]
-  /*immediate view while pages load*/_app.onload=`<style>body{background:var(--background);display:flex;align-items:center;justify-content:center;height:100vh}@keyframes spin{to{transform:rotate(359deg)}}</style><svg fill=var(--color) -transform=rotate(0deg) -animation="spin 800ms linear infinite" .loading width=60 height=60 viewBox="0 0 24.00 24.00"><path d="M12 4V2C6.5 2 2 6.5 2 12h2c0-4.4 3.6-8 8-8z"/></svg>`
+  /*immediate view while pages load*/_app.onload=`<style>body{background:var(--background);display:flex;align-items:center;justify-content:center;height:100vh}@keyframes spin{to{transform:rotate(359deg)}}</style><svg fill=var(--accent) -transform=rotate(0deg) -animation="spin 800ms linear infinite" .loading width=60 height=60 viewBox="0 0 24.00 24.00"><path d="M12 4V2C6.5 2 2 6.5 2 12h2c0-4.4 3.6-8 8-8z"/></svg>`
   app.load=_app.load
   
  document.write(`<!DOCTYPE html>
  <html lang=en>
  <head>
  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
- <meta name="theme-color" content="${manifest.color||"#e91e63"}">
+ <meta name="theme-color" content="${manifest.accent||"#e91e63"}">
  <link rel="apple-touch-icon" href="${manifest.icon||"/favicon.ico"}">
  <link rel="manifest" href="data:application/json;base64,${btoa(JSON.stringify(webmanifest))}">
  <title>${manifest.title||"Spectre App"}</title>
  <style>
  body{
-   --color:${manifest.color||"#e91e63"};
+   --accent:${manifest.accent||"#e91e63"};
    --background:${manifest.background||"#fff"};
    --shadow:${manifest.shadow||"#00000020"};
-   --text:${manifest["text"]||"#454545"}
+   --color:${manifest.color||"#454545"}
  }
- ${manifest.theme=="system"?"@media (prefers-color-scheme: dark) {body{--background:#151515;--text:#fafafa;--shadow:#00000050}}":""}</style>
+ ${manifest.theme=="system"?"@media (prefers-color-scheme: dark) {body{--background:#151515;--color:#fafafa;--shadow:#00000050}}":""}</style>
  </head>
  </html> `)
  
  //parse inline scripts on document ready
- window.onload=async ()=>{/*handle on back press*/window.onpopstate=()=>{document.body.innerText="";(_app.state.pop()||[]).map(e=>document.body.append(e))};/*spy on mutations*/_app.tmnt(document.body);/*load entry file*/_app.load(manifest.main||"index.shard",{flags:"stateless"})}
+ window.onload=async ()=>{if(manifest.console=="eruda")eruda.init();/*handle on back press*/window.onpopstate=()=>{document.body.innerText="";(_app.state.pop()||[]).map(e=>document.body.append(e)); app.refreshFormat();if(_app.back)_app.back(history.state)};/*spy on mutations*/_app.tmnt(document.body);/*load entry file*/_app.load(manifest.main||"index.shard",{flags:"stateless"})}
   loadDelay=()=>{}
   document.close()
   
