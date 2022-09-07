@@ -8,7 +8,7 @@ manifest.theme=manifest.theme||"system"
 //delay load complete
 ;(window.loadDelay=()=>{
   let scri=document.createElement("script")
-  scri.src="data:text/javascript;base64,"+btoa("")
+  scri.src=""
   scri.onload=e=>{scri.remove();loadDelay()}
   document.head.appendChild(scri)})()
 
