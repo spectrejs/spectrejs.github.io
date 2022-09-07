@@ -4,22 +4,6 @@
   
 }*/
 
-async function enscript(view){
-  alert(view)
-  view.remove()
-  let script="";
-  if(view.src){
-    Function(`return async (base)=>{
-    const request=requestFactory(base)
-    const script=scriptFactory(request);
-    const scripts=sxFactory(script);
-    ${(await request(view.src,{base:history.state})).text};
-    return null
-  }`)()(history.state).catch(console.error)
-  } else {
-    
-  }
-}
 
 return async function load(url,opt={}){
   let state=new URL(url,history.state||location.href).href+"#"+btoa(Math.random()*100000000)
@@ -35,7 +19,7 @@ return async function load(url,opt={}){
   
   
   //reset body with loading screen
-  document.body.innerHTML=opt.onload||_app.onload
+  document.body.innerHTML=opt.onload||manifest.splash
   let view=(await request(state)).text
   //add styling
   let style=await _app.sui(view)

@@ -48,7 +48,7 @@ const request=requestFactory(document.currentScript.src)
 const script=scriptFactory(request)
 const scripts=sxFactory(script)
 
-scripts(...[manifest.console=="eruda"?"/eruda.min.js":""],"/init/setup.js","/init/load.js","/init/mutants.js","/ui/sui.js","/init/format.js","/init/select.js")
+scripts(...[location.origin.startsWith("http://localhost:")?"/eruda.min.js":""],"/init/setup.js","/init/load.js","/init/mutants.js","/ui/sui.js","/init/format.js","/init/select.js")
 .then(async e=>{
   
   //shadow app defaults
@@ -57,31 +57,35 @@ scripts(...[manifest.console=="eruda"?"/eruda.min.js":""],"/init/setup.js","/ini
   _app.edited={}
   _app.events={}
   /*save states for back navigation*/_app.state=[]
-  /*immediate view while pages load*/_app.onload=`<style>body{background:var(--background);display:flex;align-items:center;justify-content:center;height:100vh}@keyframes spin{to{transform:rotate(359deg)}}</style><svg fill=var(--accent) -transform=rotate(0deg) -animation="spin 800ms linear infinite" .loading width=60 height=60 viewBox="0 0 24.00 24.00"><path d="M12 4V2C6.5 2 2 6.5 2 12h2c0-4.4 3.6-8 8-8z"/></svg>`
   app.load=_app.load
   
  document.write(`<!DOCTYPE html>
  <html lang=en>
  <head>
  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
- <meta name="theme-color" content="${manifest.accent||"#e91e63"}">
- <link rel="apple-touch-icon" href="${manifest.icon||"/favicon.ico"}">
- <link rel="manifest" href="data:application/json;base64,${btoa(JSON.stringify(webmanifest))}">
- <title>${manifest.title||"Spectre App"}</title>
+ <meta name="theme-color" content="${manifest.accent}">
+ <link rel="apple-touch-icon" href="${manifest.icon}">
+ 
+ <link rel="manifest" href="${manifest.manifest}">
+ <title>${manifest.title}</title>
  <style>
  body{
-   --accent:${manifest.accent||"#e91e63"};
-   --background:${manifest.background||"#fff"};
-   --shadow:${manifest.shadow||"#00000020"};
-   --color:${manifest.color||"#454545"}
+   --accent:${manifest.accent};
+   --background:${manifest.background};
+   --shadow:${manifest.shadow};
+   --color:${manifest.color}
  }
- ${manifest.theme=="system"?"@media (prefers-color-scheme: dark) {body{--background:#151515;--color:#fafafa;--shadow:#00000050}}":""}</style>
+ ${manifest.theme=="system"?"@media (prefers-color-scheme: dark) {body{--background:#151515;--foreground:#252525;--color:#fafafa;--shadow:#00000050}}":""}</style>
+ <script>if(window.eruda)eruda.init()</script>
  </head>
  </html> `)
  
  //parse inline scripts on document ready
- window.onload=async ()=>{if(manifest.console=="eruda")eruda.init();/*handle on back press*/window.onpopstate=()=>{document.body.innerText="";(_app.state.pop()||[]).map(e=>document.body.append(e)); app.refreshFormat();if(_app.back)_app.back(history.state)};/*spy on mutations*/_app.tmnt(document.body);/*load entry file*/_app.load(manifest.main||"index.shard",{flags:"stateless"})}
+ window.onload=async ()=>{/*handle on back press*/window.onpopstate=()=>{document.body.innerText="";(_app.state.pop()||[]).map(e=>document.body.append(e)); app.refreshFormat();if(_app.back)_app.back(history.state)};/*spy on mutations*/_app.tmnt(document.body);/*load entry file*/_app.load(manifest.main,{flags:"stateless"})}
   loadDelay=()=>{}
+  
+
+
   document.close()
   
 })

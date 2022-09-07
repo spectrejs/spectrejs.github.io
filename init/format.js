@@ -93,6 +93,10 @@ app.edit=function(target,method,...args){
    _app.edited[method]=handler
    return app
  }
+ app.onEdit=function(method,handler){
+   _app.edited[method]=handler
+   return app
+ }
  
 
 app.refreshFormat=function(){
