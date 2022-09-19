@@ -1,0 +1,21 @@
+text{ margin:5px}
+text>*{ margin:0px}
+
+
+text.micro{font-size:0.3rem;}
+text.tiny{font-size:0.5rem;}
+text.xxxsmall{font-size:0.6rem;}
+text.xxsmall{font-size:0.7rem;}
+text.xsmall{font-size:0.8rem;}
+text.small{font-size:0.9rem;}
+text.large{font-size:1.2rem;}
+text.xlarge{font-size:1.4rem;}
+text.xxlarge{font-size:1.6rem;}
+text.xxxlarge{font-size:1.8rem;}
+text.jumbo{font-size:2rem;}
+text.hero{font-size:3rem;}
+
+
+text.bold,text.heavy,text.large{font-weight:bold;}
+text.thin,text.light{font-weight:200;}
+text.italic{font-style:italic;}

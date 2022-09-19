@@ -1,0 +1,22 @@
+<html>
+  <meta charset=UTF-8 >
+  <script
+  src=setup.js 
+  worker=sw.js
+  ></script>
+  <script src=bind.js ></script>
+  <script src=open.js ></script>
+  <script src=parser.js ></script>
+  
+  <ul bind=todo bind.default=[] bind.local=todo >
+  <li>{*}</li>
+</ul>
+
+<input on.enter=submit placeholder="add todo">
+<script>
+  function submit(){
+    todo.push(this.value)
+    this.value=""
+  }
+</script>
+</html>
