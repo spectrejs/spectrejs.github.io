@@ -28,8 +28,6 @@ _app.raw_bind=(data,temp,join="",preview)=>{
         return c
       
     })
-    /*if(typeof e=="object"&&e!==null)for(const x in e){
-      t=t.replaceAll(`{${x}}`,String(e[x])) }*/
     list+=join+t
   })
   return list
@@ -55,23 +53,25 @@ _app.createBind=(nv,vd)=>{
   //handle bound events
   bound.forEach(e=>{
       let value=window["#"+nv]
+      let attr=Object.assign({},...[...(e.attributes||[])].map(e=>{return {[e.name]:e.value}}))
+      
       //if binds are connected to storages
-      if(e.getAttribute("bind.local"))localStorage[e.getAttribute("bind.local")]=JSON.stringify(value)
-      if(e.getAttribute("bind.session"))sessionStorage[e.getAttribute("bind.session")]=JSON.stringify(value)
+      if(attr["bind.local"])localStorage[attr["bind.local"]]=JSON.stringify(value)
+      if(attr["bind.session"])sessionStorage[attr["bind.session"]]=JSON.stringify(value)
       
       //event binds
-      if(e.getAttribute("on.bind"))Function(`if(typeof ${e.getAttribute("on.bind")}==="function"){${e.getAttribute("on.bind")}.apply(arguments[0],[arguments[1]])} `)(e,value)
+      if(attr["on.bind"])Function(`if(typeof ${attr["on.bind"]}==="function"){${attr["on.bind"]}.apply(arguments[0],[arguments[1]])} `)(e,value)
      
-      if(e.getAttribute("on.bind.prevent"))Function(`if(typeof ${e.getAttribute("on.bind.prevent")}==="function"){${e.getAttribute("on.bind.prevent")}.apply(arguments[0],[arguments[1]])} `)(e,value)
+      if(attr["on.bind.prevent"])Function(`if(typeof ${atttr["on.bind.prevent"]}==="function"){${attr["on.bind.prevent"]}.apply(arguments[0],[arguments[1]])} `)(e,value)
       
       //once binds
-      if(e.getAttribute("on.bind.once")){
-        Function(`if(typeof ${e.getAttribute("on.bind.once")}==="function"){${e.getAttribute("on.bind.once")}.apply(arguments[0],[arguments[1]])} `)(e,value)
+      if(attr["on.bind.once"]){
+        Function(`if(typeof ${attr["on.bind.once"]}==="function"){${attr["on.bind.once"]}.apply(arguments[0],[arguments[1]])} `)(e,value)
         e.removeAttribute("on.bind.once")
       }
       
       //inline
-      if(e.getAttribute("on.bind.script"))Function("return async function(e){"+e.getAttribute("on.bind.script")+"}")().apply(e,[value])
+      if(attr["on.bind.script"])Function("return async function(e){"+attr["on.bind.script"]+"}")().apply(e,[value])
     })
   }
   if(vd!==undefined)window[nv]=vd

@@ -21,7 +21,7 @@ app.open=async function(url,opts=""){
   return page }
 
 window.onpopstate=e=>{
-  _app.back(e)
+  if(window.onBack)onBack(history.state)
   let el=[...document.querySelectorAll("modal")].pop()
   if(el)el.remove()
 }

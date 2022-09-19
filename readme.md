@@ -1,4 +1,4 @@
-SpectreJS v1.0.0
+SpectreJS v1.0
 ---
 A tiny Super-powered reactive frontend JS framework for building amazing web apps, fast! (yeah, thats a mouthful ).
 
@@ -32,7 +32,32 @@ A tiny Super-powered reactive frontend JS framework for building amazing web app
   }
 </script>
 ```
-With features like event and data binding, natural feeling syntax, 0 build steps and easy installation all under **10kb**, interested?
+##### Business card
+```html
+<script src=//spectrejs.github.io/spectre.js ></script>
+<style>
+  .card{
+    margin:10px;
+    width:150px;
+    height:150px;
+    box-shadow:0px 0px 4px 4px #00000025;
+    border-radius:10px;
+    overflow:hidden;
+  }
+</style>
+<div .card bind=info >
+  <img src={icon} -width=100% -height=100px -object-fit=cover>
+  <p -margin=auto -padding-left=5px>{name}<br/><span -color=--accent>{desc}</span></p>
+</div>
+<script>
+  var info = {
+    name:"SpectreJS",
+    desc:"By Faizle G.",
+    icon:"/favicon.ico"
+  }
+</script>
+```
+With features like event and data binding, natural feeling syntax, 0 build steps and easy installation all under **15kb**, interested?
 
 ---
 ### Docs

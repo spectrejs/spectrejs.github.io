@@ -21,8 +21,15 @@ async function mutate(el){
   if(prop.startsWith("--")){
     el.style.setProperty(prop,attr[prop])
     el.removeAttribute(prop)}
+    
   if(prop.startsWith("-")){
-    el.style[prop.replace("-","")]=attr[prop].startsWith("--")?`var(${attr[prop]})`:attr[prop]
+    if(prop.includes(".")){
+      //inline child selectors (beta)
+      let collect=prop.replace("-","").split(".")
+      let style=collect.pop()
+      let selector=collect.join(".")
+      ;[...el.querySelectorAll(selector||"*")].map(e=>e.style[style]=attr[prop])
+    } else el.style[prop.replace("-","")]=attr[prop].startsWith("--")?`var(${attr[prop]})`:attr[prop]
     el.removeAttribute(prop)}
   
   /* Classes, from .blue to class=blue or .red.long to class="red long" */
@@ -79,7 +86,7 @@ async function mutate(el){
   if(prop=="open.solid")el.onclick=e=>app.open(attr[prop],"solid")
   
   /*backup*/
-  if(prop=="back")el.onclick=e=>app.back()
+  if(prop=="back")el.onclick=e=>history.back()
   
   if(prop.startsWith("on.itemclick"))el.onclick=e=>{
     if(e.composedPath()[0]!==el){

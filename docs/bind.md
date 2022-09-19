@@ -50,4 +50,4 @@ When you set a global variable name to the `bind` attribute of an element, its v
 if the variable is not defined or no default is set then the element will be emptied.
 
 ---
-[continue to modals](./modal.md)
+[continue to modals](./modals.md)

@@ -21,6 +21,8 @@ SpectreJS - Cheatsheet
 #id 
 -style=value -style=--css-variable
 --css-variable=value 
+-css-selector.style=value
+
 .class .binded.class 
 :type 
 

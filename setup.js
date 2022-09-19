@@ -6,17 +6,11 @@ let __loop=setInterval(()=>document.readyState=="complete"?(__splash.remove(),cl
 
 //initialize app functions
 window.app={
-  id(id){return document.getElementById(id)},//shortcut
-  back(func){if(func)_app.back=func;else history.back();return app},//handle back press or just go back
   parser(func){_app.parser.push(func);return app},
   params:Object.fromEntries(new URLSearchParams(location.search)),//extend live parser cc
-  refresh(bind){for(const x in _app.bind){if(bind){if(x==bind)app.bind(x,_app.bind[x])} else app.bind(x,_app.bind[x])}; return app},//refresh binds
 }
 window._app={
-  bind:{},// format raw values
   parser:[],//extend dom parser
-  back(){},//on back pressed handler
-  build:1.2
 }
 
 //manifest defaults
