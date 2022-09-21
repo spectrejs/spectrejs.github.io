@@ -16,6 +16,6 @@ text.jumbo{font-size:2rem;}
 text.hero{font-size:3rem;}
 
 
-text.bold,text.heavy,text.large{font-weight:bold;}
+text.bold,text.heavy{font-weight:bold;}
 text.thin,text.light{font-weight:200;}
 text.italic{font-style:italic;}

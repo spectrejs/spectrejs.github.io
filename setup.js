@@ -19,7 +19,7 @@ manifest.src=document.currentScript.src
 manifest.icon=new URL(manifest.icon,location.origin).href
 
 //themes
-if(manifest.theme=="dark")Object.assign(manifest,{color:"#fcfcfc",background:"#151515",foreground:"#252525",shadow:"#00000060"})
+if(manifest.theme=="dark")Object.assign(manifest,{color:"#fcfcfc",background:"#151515",foreground:"#252525",shadow:"#000000aa"})
 if(manifest.theme=="oled")Object.assign(manifest,{color:"#fcfcfc",background:"#000",foreground:"#151515",shadow:"#ffffff25"})
 
 //best practices
@@ -29,7 +29,7 @@ let header=document.createElement("head")
 header.innerHTML=`<meta name=viewport content=width=device-width,initial-scale=1><title>${manifest.title}</title><meta name=theme-color content="${manifest.accent}"><link rel=apple-touch-icon href="${manifest.icon}"><link rel=icon type=image/png href="${manifest.icon}"><link rel=manifest href="data:application/manifest+json,${
   encodeURIComponent(JSON.stringify({"name":manifest.title,"short_name":manifest.title,"start_url":manifest.entry,"display":"standalone","background_color":manifest.background,"theme_color":manifest.accent,"description":manifest.desc,"icons":[{"src":manifest.icon,"sizes":"192x192","type":"image/png"},{"src":manifest.icon,"sizes":"512x512","type":"image/png","purpose":"any maskable"}]}))
   
-}">${`<style current-theme>html{--accent:${manifest.accent};--color:${manifest.color};--background:${manifest.background};--foreground:${manifest.foreground};--shadow:${manifest.shadow};background:var(--background);color:var(--color)}</style>`}${manifest.theme=="system"?"<style dark-mode>@media (prefers-color-scheme: dark) {html{--background:#151515;--foreground:#252525;--color:#fcfcfc;--shadow:#00000060}}</style>":""}${/*load stylesheet*/[manifest.ui?"core":undefined,...manifest.ui.split(" ")].filter(e=>e).map(e=>`<link rel=stylesheet href="${new URL("./ui/"+e+".css",manifest.src).href}">`).join("")}`
+}">${`<style current-theme>html{--accent:${manifest.accent};--color:${manifest.color};--background:${manifest.background};--foreground:${manifest.foreground};--shadow:${manifest.shadow};background:var(--background);color:var(--color)}</style>`}${manifest.theme=="system"?"<style dark-mode>@media (prefers-color-scheme: dark) {html{--background:#151515;--foreground:#252525;--color:#fcfcfc;--shadow:#000000aa}}</style>":""}${/*load stylesheet*/["core",...manifest.ui.split(" ")].filter(e=>e).map(e=>`<link rel=stylesheet href="${new URL("./ui/"+e+".css",manifest.src).href}">`).join("")}`
 ;[...header.children].forEach(e=>document.head.appendChild(e))
 
 

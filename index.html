@@ -7,16 +7,13 @@
   <script src=bind.js ></script>
   <script src=open.js ></script>
   <script src=parser.js ></script>
+  <script>
+    app.modal(`
+    <icon back>chevron-left</icon>
+    <script>alert("yay")<\/script>
+    
+    `)
+   
+  </script>
   
-  <ul bind=todo bind.default=[] bind.local=todo -li.color=blue >
-  <li>{*}</li>
-</ul>
-
-<input on.enter=submit placeholder="add todo">
-<script>
-  function submit(){
-    todo.push(this.value)
-    this.value=""
-  }
-</script>
 </html>

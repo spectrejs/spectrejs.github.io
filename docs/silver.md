@@ -64,14 +64,13 @@ open.solid=app.open(url,solid)
   app.open("url","frame")
   app.modal("html","url-scope")
   
+  function onBack(){
+    //app on back press
+  }
   
-  app.back()
-  app.back(function onBack(state){})
-  
-  app.id("element-id")
   app.parser(function customParser(element){})
   app.params={URLParameters}
   
-  
+  //create bind using "bind" function
 </script>
 ```

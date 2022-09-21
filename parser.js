@@ -1,10 +1,10 @@
-new MutationObserver(e=>e.forEach(e=>[...e.addedNodes].filter(e=>e.nodeName!=="#text").filter(e=>e.nodeName!=="#comment").map(mutate).map(async e=>(await e).removeAttribute("_parsed")))).observe(document.documentElement,{childList:true,subtree:true})
+/*spy on appended children*/new MutationObserver(e=>e.forEach(e=>[...e.addedNodes].filter(e=>e.nodeName!=="#text").filter(e=>e.nodeName!=="#comment").map(mutate).map(e=>e.removeAttribute("_parsed")))).observe(document.documentElement,{childList:true,subtree:true})
 
 
 
 //runtime mutations based on passed attributes
-async function mutate(el){
-  //check if an element is already parsed
+function mutate(el){
+  //check if an element is already parsed (!)
   if(el.getAttribute("_parsed"))return el
   else el.setAttribute("_parsed",".")
   
@@ -88,6 +88,8 @@ async function mutate(el){
   /*backup*/
   if(prop=="back")el.onclick=e=>history.back()
   
+  
+  /*Custom events itemclick and enter*/
   if(prop.startsWith("on.itemclick"))el.onclick=e=>{
     if(e.composedPath()[0]!==el){
       /* god knows i dont trust this code but it works so... eish */
@@ -125,11 +127,11 @@ async function mutate(el){
   
   //specials
   
-  //create binder
+  //create bind
   if(attr.bind){
     if (!attr.template) el.setAttribute("template", el.innerHTML)
     el.innerHTML = ""
-    _app.createBind(attr.bind)}
+    bind(attr.bind,window["#"+attr.bind])}
   
   //bind default
   if(attr["bind.default"]!==undefined&&attr.bind){
@@ -149,20 +151,25 @@ async function mutate(el){
   }
   
   
+  //Async tags
+  if(el.tagName=="SCRIPT"){
+      el.remove()
+      setTimeout(e=>document.head.appendChild(el),0) }
+  
   //inject loading icon
   if(el.tagName=="LOAD")el.innerHTML=`<svg fill=currentColor .loading width=16 height=16 viewBox="0 0 24.00 24.00"><path d="M12 4V2C6.5 2 2 6.5 2 12h2c0-4.4 3.6-8 8-8z"/></svg>`
   
   if(el.tagName=="IMG"||el.tagName=="IFRAME")el.loading="lazy"
+  if(el.tagName=="IMG")el.alt=el.alt||el.src
   
   //inject svg icon
   if(el.tagName=="ICON"&&!el.children[0]){
     let icon=el.innerText.replaceAll(" ","-")
     el.innerHTML=`<svg fill=currentColor .loading width=16 height=16 viewBox="0 0 24.00 24.00"><path d="M12 4V2C6.5 2 2 6.5 2 12h2c0-4.4 3.6-8 8-8z"/></svg>`
-    let data=await fetch(new URL("./ui/icons/"+icon+".svg",manifest.src).href).catch(e=>"x")
-    if(data==="x"||!data.ok)el.innerHTML=`<svg width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16"><path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/></svg>`
-    else el.innerHTML=await data.text().catch(e=>`<svg width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16"><path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/></svg>`)
+    fetch(new URL("./ui/icons/"+icon+".svg",manifest.src).href).then(e=>e.text()).then(e=>el.innerHTML=e).catch(e=>el.innerHTML=`<svg width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16"><path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/></svg>`)
   }
   
+  //adding custom parsers 
   _app.parser.forEach(e=>e(el,attr))
   //parsing deep nested kids
   ;[...(el.children||[])].forEach(mutate)

@@ -17,7 +17,7 @@ _app.raw_bind=(data,temp,join="",preview)=>{
   let list =""
   //template data
   data.forEach(e=>{
-    let t=temp.replaceAll("{*}",String(e))
+    let t=String(temp).replaceAll("{*}",String(e))
     .replace(/{.*?}/gi,function(rep){
       rep=rep.replace(/[{}]/g,"").split(".")
         let c=e
@@ -33,25 +33,25 @@ _app.raw_bind=(data,temp,join="",preview)=>{
   return list
 }
 
-_app.createBind=(nv,vd)=>{
-  Object.defineProperty(window,nv,{
+const bind=(nv,vd)=>{
+    try{Object.defineProperty(window,nv,{
     set(v){
       window["#"+nv]=v
-      refresh()
+      if(window["#"+nv]===undefined||window["#"+nv]===null);else refresh()
       return true
     },
     get(){
-      if(typeof window["#"+nv]=="object")setTimeout(refresh,0)
+      if(typeof window["#"+nv]==="object")setTimeout(refresh,0)
       return window["#"+nv]
     }
-  })
+  })}catch(e){}
   let refresh=()=>{
     let bound=[]
     //bind all currently visible elements
    ;[...document.querySelectorAll(`[bind="${nv}"]`)]
     .forEach(e=>{e.innerHTML=_app.raw_bind(window["#"+nv],e.getAttribute("template"),e.getAttribute("join")||"",e.getAttribute("bind.preview"));bound.push(e)})
   //handle bound events
-  bound.forEach(e=>{
+    bound.forEach(e=>{
       let value=window["#"+nv]
       let attr=Object.assign({},...[...(e.attributes||[])].map(e=>{return {[e.name]:e.value}}))
       
@@ -74,5 +74,6 @@ _app.createBind=(nv,vd)=>{
       if(attr["on.bind.script"])Function("return async function(e){"+attr["on.bind.script"]+"}")().apply(e,[value])
     })
   }
-  if(vd!==undefined)window[nv]=vd
+  
+  if(vd!==undefined)window[nv]=vd||window[nv];
 }
