@@ -26,9 +26,15 @@ app.open=async function(url,opts=""){
   if(opts.includes("frame")){
     page.innerHTML=`<iframe src="${url}" -width=100% -height=100% -border=0 >`
     } else {
-    let data=await fetch(url).catch(e=>null)
-    if(data===null||!data.ok)page.innerHTML="Failed to load"
-    else page.innerHTML=await data.text().catch(e=>"Failed to load")}
+      if(sessionStorage[url])page.innerHTML=sessionStorage[url];
+    else {
+      let data=await fetch(url).catch(e=>null)
+      if(data===null||!data.ok)data="Failed to load"
+      else data=await data.text().catch(e=>"Failed to load")
+      if(data!=="Failed to load")sessionStorage[url]=data
+      page.innerHTML=data
+      
+    }}
   return page }
 
 window.onpopstate=e=>{

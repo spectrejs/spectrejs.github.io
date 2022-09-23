@@ -2,7 +2,9 @@
 let __splash=document.createElement("splash-screen")
 Object.assign(__splash.style,{position:"fixed",top:0,left:0,width:"100vw",height:"100vh",background:"var(--background",zIndex:999})
 document.documentElement.appendChild(__splash)
-let __loop=setInterval(()=>document.readyState=="complete"?(__splash.remove(),clearInterval(__loop)):"",100)
+document.addEventListener('readystatechange', (event) => {
+  if (event.target.readyState === 'interactive')__splash.remove()
+});
 
 //initialize app functions
 window.app={
