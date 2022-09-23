@@ -7,10 +7,12 @@
   <script src=bind.js ></script>
   <script src=open.js ></script>
   <script src=parser.js ></script>
-  <button open=index.html ><icon -color=--accent>alarm</icon>open</button>
+  <button open=index.html bind=user ><icon -color=--accent>alarm</icon>{name} {age} {weight}</button>
   <script>
-   
-   
-  </script>
+   var user={
+     name:"Joe",
+     age:50
+   }
+   </script>
   
 </html>

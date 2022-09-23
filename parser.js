@@ -131,13 +131,13 @@ function mutate(el){
   if(attr.bind){
     if (!attr.template) el.setAttribute("template", el.innerHTML)
     el.innerHTML = ""
-    bind(attr.bind,window["#"+attr.bind])}
+    bind(attr.bind)}
   
   //bind default
   if(attr["bind.default"]!==undefined&&attr.bind){
     let prop="bind.default"
     try{attr[prop]=JSON.parse(attr[prop])}catch(e){}
-    if(window["#"+attr.bind]===undefined)window[attr.bind]=attr[prop]
+    if(window[attr.bind]===undefined)window[attr.bind]=attr[prop]
   }
   
   //bind url 

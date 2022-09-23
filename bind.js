@@ -3,6 +3,7 @@
 
 
 _app.raw_bind=(data,temp,join="",preview)=>{
+  if(data===undefined)return ""
   //wrap non-arrays into an array
   if(typeof data=="object"){
     if(data===null||!(data instanceof Array))data=[data]
@@ -13,46 +14,22 @@ _app.raw_bind=(data,temp,join="",preview)=>{
   if(preview=="last")data=[data.pop()]
   if(preview=="random")data=[data[Math.floor(Math.random() * data.length)]]
 
-  
-  let list =""
-  //template data
-  data.forEach(e=>{
-    let t=String(temp).replaceAll("{*}",String(e))
-    .replace(/{.*?}/gi,function(rep){
-      rep=rep.replace(/[{}]/g,"").split(".")
-        let c=e
-        for(var i=0;i<rep.length;i++){
-          if(typeof c=="object"&&c!==null&&c[String(rep[i]).trim()]!==undefined)c=c[String(rep[i]).trim()];
-          else c=undefined;
-        }
-        return c
-      
-    })
-    list+=join+t
-  })
-  return list
+  return data.map(e=>String(temp).replaceAll("{*}",String(e)).replace(/{.*?}/g,function(rep){
+    let x=rep.replace(/[{}]/g,"").trim()
+    try{x=Function(`return arguments[0].${x}`)(e)}catch(e){x=undefined}
+    return x===undefined?rep:x
+  })).join("")
 }
 
-const bind=(nv,vd)=>{
-    try{Object.defineProperty(window,nv,{
-    set(v){
-      window["#"+nv]=v
-      if(window["#"+nv]===undefined||window["#"+nv]===null);else refresh()
-      return true
-    },
-    get(){
-      if(typeof window["#"+nv]==="object")setTimeout(refresh,0)
-      return window["#"+nv]
-    }
-  })}catch(e){}
-  let refresh=()=>{
-    let bound=[]
+function bind(b,vv){
+  function refresh(){
+  let bound=[]
     //bind all currently visible elements
-   ;[...document.querySelectorAll(`[bind="${nv}"]`)]
-    .forEach(e=>{e.innerHTML=_app.raw_bind(window["#"+nv],e.getAttribute("template"),e.getAttribute("join")||"",e.getAttribute("bind.preview"));bound.push(e)})
+   ;[...document.querySelectorAll(`[bind="${b}"]`)]
+    .forEach(e=>{e.innerHTML=_app.raw_bind(window[b],e.getAttribute("template"),e.getAttribute("join")||"",e.getAttribute("bind.preview"));bound.push(e)})
   //handle bound events
     bound.forEach(e=>{
-      let value=window["#"+nv]
+      let value=window[b]
       let attr=Object.assign({},...[...(e.attributes||[])].map(e=>{return {[e.name]:e.value}}))
       
       //if binds are connected to storages
@@ -74,6 +51,33 @@ const bind=(nv,vd)=>{
       if(attr["on.bind.script"])Function("return async function(e){"+attr["on.bind.script"]+"}")().apply(e,[value])
     })
   }
-  
-  if(vd!==undefined)window[nv]=vd||window[nv];
+  function sub(v){
+  v = new Proxy(v, {
+    set(t, p, v, r) {
+      if (typeof v == "object" && v !== null) v = sub(v)
+      Reflect.set(t, p, v, r)
+      if (!(typeof v == "object" && v !== null))refresh()
+      return true
+    }
+  })
+  let x = Object.assign({}, v)
+  Object.keys(v).forEach(e => delete v[e])
+  Object.assign(v, x)
+  return v
+  }
+  try{
+    Object.defineProperty(window,b,{
+      set(value){
+        window["#"+b]=typeof value=="object"&&value!==null?sub(value):value
+        refresh()
+        return true
+      },
+      get(){
+        return window["#"+b]
+      }
+    })
+  }catch(e){}
+  if(vv!==undefined) window[b]=vv
+  else window[b]=window[b]
 }
+

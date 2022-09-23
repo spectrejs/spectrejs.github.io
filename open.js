@@ -5,15 +5,7 @@ app.modal=function(html,url=location.href){
   el.setAttribute("on.click.script","if(e.composedPath()[0]===this)history.back()")
  el.innerHTML=html||""
  //evaluate modal scripta
- ;[...el.querySelectorAll("script")].forEach(e=>{
-   e.remove()
-   if(e.src)import(e.src)
-   else {
-     let ns=document.createElement("script")
-     ns.innerHTML=e.innerHTML
-     document.head.appendChild(ns)
-   }
- })
+ ;[...el.querySelectorAll("script")].forEach(e=> e.remove())
   document.documentElement.appendChild(el)
  history.pushState(btoa(Math.random()),null,location.href)
  return el
