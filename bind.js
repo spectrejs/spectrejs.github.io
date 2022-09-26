@@ -31,10 +31,10 @@ const __refresh=function(prop){
     if(e.getAttribute("bind.local"))localStorage[prop]=JSON.stringify(bind[prop])
     else if(e.getAttribute("bind.session"))sessionStorage[prop]=JSON.stringify(bind[prop])
     
-    if(e.getAttribute("onbind")){
+    if(e.getAttribute("onbind")&&bind[prop]!==undefined){
       let val=e.getAttribute("onbind").trim()
       if(val in window)window[val].apply(e,[x])
-      else Function(`return async function(value){${val}}`)().apply(e,[bind[prop]])
+      else Function(`return async function(event){${val}}`)().apply(e,[bind[prop]])
     }
     
     })
@@ -56,15 +56,15 @@ parser.extend(function(el,attr){
     
     //bind from storages
     if("bind.local" in attr&&attr["bind.local"] in localStorage)def=localStorage[attr["bind.local"]]
-    if("bind.session" in attr&&attr["bind.session"] in sessionStorage)def=sessionStorage[attr["bind.sessiom"]]
+    if("bind.session" in attr&&attr["bind.session"] in sessionStorage)def=sessionStorage[attr["bind.session"]]
     if("bind.cookie" in attr&&attr["bind.cookie"] in cookies)def=cookies[attr["bind.local"]]
     
     //parse json if is
     try{def=JSON.parse(def)}catch(e){}
     
     //refresh bind
-    if(cbind in bind)bind[cbind]=bind[cbind]
-    else bind[cbind]=def
+    if(bind[cbind]!==undefined)bind[cbind]=bind[cbind]
+    else if(def!==undefined)bind[cbind]=def
     
     //bind from an external source
     if("bind.url" in attr)fetch(new URL(attr["bind.url"],el.closest("[url-scope]")?el.closest("[url-scope]").getAttribute("url-scope"):location.href)).then(e=>e.text())

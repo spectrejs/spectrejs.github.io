@@ -7,7 +7,8 @@ parser.extend(function(el,attr){
   if(el.tagName=="IMG"||el.tagName=="IFRAME")el.loading="lazy"
   
   //set default alt to
-  if(el.tagName=="IMG")el.alt=el.alt||String(String(String(el.src).split("/").pop()).split(".")[0]).replaceAll("-"," ")
+  if(el.tagName=="IMG"){
+    el.alt=el.alt||String(String(String(el.src).split("/").pop()).split(".")[0]).replaceAll("-"," ")}
   
   //open modal pages
   if ("open" in attr) el.onclick = e => open(attr.open)
