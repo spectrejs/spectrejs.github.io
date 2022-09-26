@@ -1,4 +1,4 @@
-app.modal=function(html,url=location.href){
+const modal=function(html,url=location.href){
   let el=document.createElement("modal")
   el.setAttribute("style","position:fixed;z-index:3;top:0;left:0;width:100%;height:100%;background:var(--shadow);overflow: auto;display:flex;flex-direction:column;align-items:flex-start;align-content:flex-start;justify-content:flex-start;flex:none")
   el.setAttribute("url-scope",url)
@@ -11,9 +11,9 @@ app.modal=function(html,url=location.href){
  return el
 }
 
-app.open=async function(url,opts=""){
+const open=async function(url,opts=""){
   url=new URL(url,location.href).href
-  let page=app.modal("<load -margin=auto >",url)
+  let page=modal("<load -margin=auto >",url)
   if(opts.includes("solid"))page.style.background="var(--background)"
   if(opts.includes("frame")){
     page.innerHTML=`<iframe src="${url}" -width=100% -height=100% -border=0 >`
@@ -29,6 +29,7 @@ app.open=async function(url,opts=""){
     }}
   return page }
 
+//on back press remove last added modal
 window.onpopstate=e=>{
   if(window.onBack)onBack(history.state)
   let el=[...document.querySelectorAll("modal")].pop()

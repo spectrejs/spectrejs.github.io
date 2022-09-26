@@ -1,18 +1,29 @@
 <html>
   <meta charset=UTF-8 >
-  <script
-  src=setup.js 
-  worker=sw.js
-  ></script>
-  <script src=bind.js ></script>
-  <script src=open.js ></script>
-  <script src=parser.js ></script>
-  <button open=index.html bind=user ><icon -color=--accent>alarm</icon>{name} {age} {weight}</button>
-  <script>
-   var user={
-     name:"Joe",
-     age:50
-   }
-   </script>
-  
-</html>
+ <!-- <script
+  src=init.js ></script>
+  <script src=parse.js ></script>
+ <script src=bind.js ></script>
+ <script src=sugar.js ></script>
+ <script src=events.js ></script>
+ <script src=icons.js ></script>
+ <script src=misc.js ></script>
+ <script src=modals.js ></script>-->
+ <script src=spectre.js ></script>
+ 
+ <ul bind.local=notes bind.default=[] onitemclick=bind.notes.splice(event.index,1) >
+  <li -padding=5px>
+    <h3 -margin=0px >{ title}</h3>
+    <p -margin=0px -color=blue >{desc}</p>
+  </li>
+</ul>
+
+<button onclick=addNote ><icon>plus</icon>add note</button>
+<button open=index.html >open</button>
+
+<script>
+  function addNote(){
+    bind.notes.splice(0,0,{title:prompt("add title"),desc:prompt("add description")})
+  }
+</script>
+  </html>

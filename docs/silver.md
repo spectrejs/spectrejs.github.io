@@ -21,20 +21,18 @@ SpectreJS - Cheatsheet
 #id 
 -style=value -style=--css-variable
 --css-variable=value 
--css-selector.style=value
 
 .class .binded.class 
 :type 
 
-on.event=handler
-on.event.prevent=handler
-on.event.once=handler
-on.event.script="inline async script (arg e)"
+onevent=handler
+onevent.prevent=handler
+onevent.once=handler
 
 custom events
-on.itemclick=listItems
-on.bind=onBind
-on.enter=keyboardEnter
+onitemclick=listItems
+onbind=onBind
+onenter=keyboardEnter
 back="onclick backs"
 
 bind=variableName
@@ -47,10 +45,10 @@ bind.preview=pickFromArray(first|last|random)
 
 template="html to be formatted"
 
-open=app.open(url)
+open=open(url)
 open.nav=window.open(url)
-open.frame=app.open(url,frame)
-open.solid=app.open(url,solid)
+open.frame=open(url,frame)
+open.solid=open(url,solid)
 
 />
 
@@ -60,17 +58,28 @@ open.solid=app.open(url,solid)
 
 <script :module >
   
-  app.open("url")
-  app.open("url","frame")
-  app.modal("html","url-scope")
+  open("url")
+  open("url","frame")
+  modal("html","url-scope")
   
   function onBack(){
     //app on back press
   }
   
-  app.parser(function customParser(element){})
+  //add custom parsing
+  parser.extend(function customParser(element,attributes){})
+  //url parameters
   app.params={URLParameters}
+  //app manifest
+  console.log(manifest)
   
-  //create bind using "bind" function
+  //access binds
+  bind.handler=value
+  
 </script>
+```
+
+build to sjs
+```bash
+cd /sdcard/Android/data/io.spck/files/spectrejs.github.io && terser init.js parse.js bind.js sugar.js events.js icons.js misc.js modals.js -o spectre.js -c -m
 ```
