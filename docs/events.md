@@ -4,7 +4,7 @@ Events bind a global variable or function to the element, the functions `this` s
 ```html
 
 <!--simple usage-->
-<div on.click=handler >hellos</div>
+<div onclick=handler >hellos</div>
 <script>
   function handler(){
     alert(this.innerText)
@@ -12,18 +12,18 @@ Events bind a global variable or function to the element, the functions `this` s
 </script>
 
 <!--inline usage-->
-<div on.click.script="alert(this.innerText)">hellos</div>
+<div onclick="alert(this.innerText)">hellos</div>
 <!--inline event object-->
-<div on.click.script="console.log(e)">hellos</div>
+<div onclick="console.log(event)">hellos</div>
 
 <!--prevent default actions-->
-<div on.click.prevent=handler >hellos</div>
+<div onclick.prevent=handler >hellos</div>
 
 <!--execute only once-->
-<div on.click.once=handler >hellos</div>
+<div onclick.once=handler >hellos</div>
 
 ```
-Note the `prevent`, `once` and `script` submethods cannot be combined.
+Note the `prevent` and `once` submethods cannot be combined.
 
 ---
-[continue to binding](./bind.md)
+[continue to icons](./icons.md)

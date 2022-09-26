@@ -10,10 +10,8 @@
  <script src=misc.js ></script>
  <script src=modals.js ></script>
  
- <ul bind.local=nl onbind=console.log(234,event)>
-   <li>{*}</li>
- </ul>
- <p>
-   <img>
- </p>
+ <p bind=quotes bind.preview=random>{*}</p>
+ <script>
+   bind.quotes = ["Love is love", "Happiness is a journey", "Other sappy quotes"]
+ </script>
   </html>

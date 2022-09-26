@@ -2,9 +2,9 @@ const modal=function(html,url=location.href){
   let el=document.createElement("modal")
   el.setAttribute("style","position:fixed;z-index:3;top:0;left:0;width:100%;height:100%;background:var(--shadow);overflow: auto;display:flex;flex-direction:column;align-items:flex-start;align-content:flex-start;justify-content:flex-start;flex:none")
   el.setAttribute("url-scope",url)
-  el.setAttribute("on.click.script","if(e.composedPath()[0]===this)history.back()")
+  el.setAttribute("onclick","if(event.composedPath()[0]===this)history.back()")
  el.innerHTML=html||""
- //evaluate modal scripta
+ //evaluate modal scripts
  ;[...el.querySelectorAll("script")].forEach(e=> e.remove())
   document.documentElement.appendChild(el)
  history.pushState(btoa(Math.random()),null,location.href)

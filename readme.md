@@ -1,69 +1,58 @@
-SpectreJS v1.0
+SpectreJS
 ---
-A tiny Super-powered reactive frontend JS framework for building amazing web apps, fast! (yeah, thats a mouthful ).
+ A minimalistic reactive framework that enhances web apps with data and event binding, PWA support, dynamically loaded icons and so much more! all under **10kb**.
 
 ### Examples
-##### Counter
+##### The infamous todo app
 ```html
-<script src=//spectrejs.github.io/spectre.js ></script>
-<p bind=count >counter value: {*}</p>
-<button on.click=increase>increase count</button>
-<script>
-  var count = 0
-  function increase(){
-    count++
-  }
-</script>
-```
-
-##### Todo list
-```html
-<script src=//spectrejs.github.io/spectre.js ></script>
-<ul bind=todo>
+<ul bind=list bind.default=[] >
   <li>{*}</li>
 </ul>
+<input :text onenter="bind.push(this.value);this.value=''" placeholder=todo>
+```
 
-<input on.enter=submit placeholder="add todo">
-<script>
-  var todo=[]
-  function submit(){
-    todo.push(this.value)
-    this.value=""
-  }
-</script>
-```
-##### Business card
+##### That counter app
 ```html
-<script src=//spectrejs.github.io/spectre.js ></script>
-<style>
-  .card{
-    margin:10px;
-    width:150px;
-    height:150px;
-    box-shadow:0px 0px 4px 4px #00000025;
-    border-radius:10px;
-    overflow:hidden;
-  }
-</style>
-<div .card bind=info >
-  <img src={icon} -width=100% -height=100px -object-fit=cover>
-  <p -margin=auto -padding-left=5px>{name}<br/><span -color=--accent>{desc}</span></p>
-</div>
+<button onclick=bind.count++ >Increase</button>
+<p bind=count bind.default=0 >value is: {*}</p>
+<button onclick=bind.count-- >Decrease</button>
+```
+
+##### Note taking app
+```html
+<ul bind.local=notes bind.default=[] onitemclick=bind.notes.splice(event.index,1) >
+  <li -padding=5px>
+    <h3 -margin=0px >{title}</h3>
+    <p -margin=0px -color=blue >{desc}</p>
+  </li>
+</ul>
+
+<button onclick=addNote ><icon>plus</icon>add note</button>
 <script>
-  var info = {
-    name:"SpectreJS",
-    desc:"By Faizle G.",
-    icon:"/favicon.ico"
+  function addNote(){
+    bind.notes.splice(0,0,{title:prompt("add title"),desc:prompt("add description")})
   }
 </script>
 ```
-With features like event and data binding, natural feeling syntax, 0 build steps and easy installation all under **15kb**, interested?
+
+---
+### Installation
+Just add spectrejs via a script tag at the top of your page and your good to go.
+```html
+<html>
+  <script src=//spectrejs.github.io/spectre.js ></script>
+  <!-- Your code goes here -->
+</html>
+```
+No hussle, no buildsteps, no nothing. If you like, please add a star, and if you don't, please also add a star so I can know you don't!
+
 
 ---
 ### Docs
 - [Setting up](./docs/setup.md)
 - [Adding sugar](./docs/sugar.md)
 - [Handling events](./docs/events.md)
+- [Bootstrap icons](./docs/icons.md)
 - [Binding data](./docs/bind.md)
 - [Creating modals](./docs/modals.md)
 - [More](./docs/more.md)

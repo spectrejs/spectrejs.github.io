@@ -1,53 +1,72 @@
 SpectreJS - Binding
 ---
-When you set a global variable name to the `bind` attribute of an element, its value gets parsed in. It then automatically reacts to changes in the value of the variable and rerenders.
+When an element is bound, all changes to that bind reflects to the UI, no matter the data type.
+
 ```html
-<!--simple usage-->
-<p bind=name>hello {*}</p>
-<p bind=user>{name.first} {name.last} is {age} years old.</p>
+<!--simple bind-->
+<p bind=text>{*}</p>
 <script>
-  var name = "John"
-  var user = {
+  bind.text="Hello Joe"
+</script>
+
+<!--binding objects-->
+<p bind=user >{name.first} {name.last} is {age} years old.</p>
+<script>
+  bind.user={
     name:{
       first:"Daniel",
       last:"Werne"
-    }
-    age:32
+    },
+    age:30
   }
 </script>
 
-<!--advanced usage-->
-<div bind=avatars ><img src={cover}><p>{name}</p></div>
+<!--binding lists-->
+<ul bind=todo >
+  <li>{*}</li>
+</ul>
 <script>
-  var avatars=[
-    {
-      cover:"/photo.png",
-      name:"Aang"
-    },
-    ...
-    ]
+  bind.todo=["Buy milk","Walk fluffy","Pay netflix"]
 </script>
 ```
 
-### On bind
+##### Default values
+If bind data has not yet been set, the element will be emptied. To set a default value, pass it to the `bind.default` attribute. Values are parsed as json.
 ```html
-<!--event handler on bind-->
-<p bind=v on.bind=handler(value)>...</p>
+<p bind=name bind.default="joe">hello {*}</p>
 ```
 
-### Default value
+##### Bind to storage
+Binding data using `bind.local` or `bind.session` automatically saves and retrieves the data from the respective storages. Values are parsed as json.
 ```html
-<!--set default value-->
-<p bind=v bind.default=value>...</p>
+<p bind.local=note >{*}</p>
+<input placeholder="add note" onenter="bind.note=this.value" >
+```
+There are currently four supported storage types.
+attr | desc
+--- | ---
+`bind.local` | localStorage
+`bind.session` | sessionStorage
+`bind.params` | URL Parameter
+`bind.cookie` | cookies
+
+##### On bind
+To detect when an element is bound or when the binds value changes, pass an `onbind` event to the element.
+```html
+<p bind.local=note onbind=alert(event) >{*}</p>
+<input placeholder="add note" onenter="bind.note=this.value" >
 ```
 
-### External resource
+##### Preview
+When binding to an array, one item can be picked out to reflect to the ui. Options are `first`, `last`, `random` or a number value to get the specific position.
 ```html
-<!--fetch data then bind-->
-<p bind=v bind.url=url >...</p>
+<p bind=quotes bind.preview=random >{*}</p>
+<script>
+  bind.quotes=["Love is love","Happiness is a journey","Other sappy quotes"]
+</script>
 ```
 
-if the variable is not defined or no default is set then the element will be emptied.
+
 
 ---
 [continue to modals](./modals.md)
