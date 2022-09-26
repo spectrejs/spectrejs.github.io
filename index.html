@@ -1,7 +1,10 @@
 <html>
   <meta charset=UTF-8 >
   <script
-  src=init.js ></script>
+  src=init.js 
+  worker=sw.js
+  ui="bar text"
+  ></script>
   <script src=parse.js ></script>
  <script src=bind.js ></script>
  <script src=sugar.js ></script>
@@ -10,8 +13,6 @@
  <script src=misc.js ></script>
  <script src=modals.js ></script>
  
- <p bind=quotes bind.preview=random>{*}</p>
- <script>
-   bind.quotes = ["Love is love", "Happiness is a journey", "Other sappy quotes"]
- </script>
+ <bar><img .round src=favicon.ico><text>SpectreJS</text><icon>three dots</icon></bar>
+ <text .xlarge.accent -margin="25px auto">Under construction</text>
   </html>
