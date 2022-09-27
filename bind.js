@@ -24,6 +24,12 @@ const bind=new Proxy({},{
 const __refresh=function(prop){
   let bound=[...document.querySelectorAll(`[bind="${prop}"],[bind\\.local="${prop}"],[bind\\.session="${prop}"]`)]
   bound.forEach(e=>{
+    
+    //check is data has already been bound, if false then qualifies for a repaint (large list optimisation)
+    let cache=bind[prop]
+    try{cache=JSON.stringify(cache)}catch(e){}
+    if(e.getAttribute("_cache")===cache)return true; else e.setAttribute("_cache",cache)
+    
     //format template into dom
     e.innerHTML=__raw_bind(bind[prop],e.getAttribute("template"),e.getAttribute("bind.join"),e.getAttribute("bind.preview"))
     
@@ -63,7 +69,7 @@ parser.extend(function(el,attr){
     try{def=JSON.parse(def)}catch(e){}
     
     //refresh bind
-    if(bind[cbind]!==undefined)bind[cbind]=bind[cbind]
+    if(bind[cbind]!==undefined)__refresh(cbind)
     else if(def!==undefined)bind[cbind]=def
     
     //bind from an external source
