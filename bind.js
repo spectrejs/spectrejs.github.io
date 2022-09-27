@@ -25,6 +25,12 @@ const __refresh=function(prop){
   let bound=[...document.querySelectorAll(`[bind="${prop}"],[bind\\.local="${prop}"],[bind\\.session="${prop}"]`)]
   bound.forEach(e=>{
     
+    //incase a template has not been set yet (case bind before ui)
+    if(!!!e.getAttribute("template")){
+      e.setAttribute("template",e.innerHTML)
+      e.innerHTML=""
+    }
+    
     //check is data has already been bound, if false then qualifies for a repaint (large list optimisation)
     let cache=bind[prop]
     try{cache=JSON.stringify(cache)}catch(e){}
