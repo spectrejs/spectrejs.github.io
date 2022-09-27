@@ -95,7 +95,7 @@ const __raw_bind=(data,temp="",join="",preview="")=>{
   if(preview=="random")data=[data[Math.floor(Math.random() * data.length)]]
   if(typeof (preview-0)=="number")[data[preview-0]]
 
-  return data.map(e=>String(temp).replaceAll("{*}",String(e)).replace(/{.*?}/g,function(rep){
+  return data.map(e=>String(temp).replaceAll("{*}",typeof e!=="object"?String(e):"{*}").replace(/{.*?}/g,function(rep){
     let x=rep.replace(/[{}]/g,"").trim()
     try{x=Function(`return arguments[0].${x}`)(e)}catch(e){x=undefined}
     return x===undefined?rep:x
