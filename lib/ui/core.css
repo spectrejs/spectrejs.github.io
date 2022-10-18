@@ -10,7 +10,7 @@
   -ms-overflow-style: none;
   scrollbar-width: none}
   
-  html, body {margin: 0;min-height: 100%;}
+  html, body {margin: 0;min-height: 100%;background-color:var(--background);color:var(--color)}
   body{
   position:relative;
   overflow: auto;
@@ -26,7 +26,7 @@ img{object-fit:cover}
 
 .round{border-radius:100%}
 .accent{color:var(--accent)}
-.background{background-color:var(--background)}
+.solid{background-color:var(--background)}
 .shadow{box-shadow:0px 0px 4px 4px var(--shadow)}
 
 .fill{width:100%;height:100%}
@@ -34,19 +34,20 @@ img{object-fit:cover}
 .fill-height,.fill-y{height:100%}
 
 
-icon,load{
+load{
   display:flex;
   align-items:center;
-  justify-content:center;}
-load{
+  justify-content:center;
   width:40px;
   height:40px;
   margin:auto;
   color:var(--accent)}
-.loading{transform:rotate(0deg);
-animation:spin 800ms linear infinite}
+load>svg{
+  width:100%;
+  height:100%;
+  transform:rotate(0deg);
+  animation:spin 800ms linear infinite}
 @keyframes spin{to{transform:rotate(359deg)}}
-load>svg,icon>svg{width:100%;height:100%}
 
 p,h1,h2,h3,h4,h5,h6{
   margin:5px;

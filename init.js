@@ -1,29 +1,54 @@
-//splash screen to hide initial layout shifts
-let __splash=document.createElement("splash-screen")
-Object.assign(__splash.style,{position:"fixed",top:0,left:0,width:"100vw",height:"100vh",background:"var(--background)",zIndex:999})
-document.documentElement.appendChild(__splash)
-document.addEventListener('readystatechange', (event) => {
-  if (event.target.readyState === 'interactive')__splash.remove()
-});
-
+//set params as object incase no support
+try{location.params=Object.fromEntries(new URLSearchParams(location.search))}catch(e){location.params={}}
 
 //manifest defaults
-const manifest=Object.assign({accent:"#e91e63",theme:"system",title:"Spectre App",desc:"Powered by SpectreJS",icon:"/favicon.ico",color:"#454545",foreground:"#fbfbfb",background:"#fff",shadow:"#00000020",entry:location.origin,ui:""},...[...(document.currentScript.attributes||[])].map(e=>{return {[e.name]:e.value}}))
+const manifest=Object.assign({accent:"#e91e63",title:"Spectre App",description:"Powered by SpectreJS",icon:"/favicon.ico","start-url":location.origin},...[...(document.currentScript.attributes||[])].map(e=>{return {[e.name]:e.value}}))
 manifest.src=document.currentScript.src
+
+//check manifest bindslocal and rewrite values if a bind is found.
+for(const prop in manifest){
+  let value=manifest[prop]
+  if(prop.startsWith("params-")&&value in location.params){
+    manifest[prop.replace("params-","")]=location.params[value]
+    delete manifest[prop]
+  }
+  
+  if(prop.startsWith("local-")&&value in localStorage){
+    manifest[prop.replace("local-","")]=localStorage[value]
+    delete manifest[prop]
+  }
+  
+  if(prop.endsWith("session-")&&value in sessionStorage){
+    manifest[prop.replace("session-","")]=sessionStorage[value]
+    delete manifest[prop]
+  }
+}
+
+//set full path of icon
 manifest.icon=new URL(manifest.icon,location.origin).href
 
-//themes
-if(manifest.theme=="dark")Object.assign(manifest,{color:"#fcfcfc",background:"#151515",foreground:"#252525",shadow:"#000000aa"})
-if(manifest.theme=="oled")Object.assign(manifest,{color:"#fcfcfc",background:"#000",foreground:"#151515",shadow:"#ffffff25"})
+
+//if html source in manifest
+if("source" in manifest){
+  fetch(new URL(manifest.source,location.href).href)
+  .then(e=>e.text())
+  .then(e=>{
+    //add new html if document is ready
+    if("body" in document)document.body.innerHTML=e
+    else document.addEventListener('readystatechange', (event) => { if (event.target.readyState=="complete")document.body.innerHTML=e })
+  }).catch(e=>{
+    //if fetch failed let client know
+  })
+}
 
 //best practices
+document.title=manifest.title
 document.documentElement.lang="en"
 if(!document.head.querySelector("meta[charset]"))console.warn("Add a charset to your head element, e.g <meta charset=\"UTF-8\">")
 let header=document.createElement("head")
-header.innerHTML=`<meta name=viewport content=width=device-width,initial-scale=1><title>${manifest.title}</title><meta name=theme-color content="${manifest.accent}"><link rel=apple-touch-icon href="${manifest.icon}"><link rel=icon type=image/png href="${manifest.icon}"><link rel=manifest href="data:application/manifest+json,${
-  encodeURIComponent(JSON.stringify({"name":manifest.title,"short_name":manifest.title,"start_url":manifest.entry,"display":"standalone","background_color":manifest.background,"theme_color":manifest.accent,"description":manifest.desc,"icons":[{"src":manifest.icon,"sizes":"192x192","type":"image/png"},{"src":manifest.icon,"sizes":"512x512","type":"image/png","purpose":"any maskable"}]}))
-  
-}">${`<style current-theme>html{--accent:${manifest.accent};--color:${manifest.color};--background:${manifest.background};--foreground:${manifest.foreground};--shadow:${manifest.shadow};background:var(--background);color:var(--color)}</style>`}${manifest.theme=="system"?"<style dark-mode>@media (prefers-color-scheme: dark) {html{--background:#151515;--foreground:#252525;--color:#fcfcfc;--shadow:#000000aa}}</style>":""}${/*load stylesheet*/["core",...manifest.ui.split(" ")].filter(e=>e).map(e=>`<link rel=stylesheet href="${new URL("/ui/"+e+".css",manifest.src).href}">`).join("")}`
+header.innerHTML=`<meta name=viewport content=width=device-width,initial-scale=1><meta name=theme-color content="${manifest["theme-color"]||manifest.accent}"><link rel=apple-touch-icon href="${manifest.icon}"><link rel=icon type=image/png href="${manifest.icon}"><link rel=manifest href="data:application/manifest+json,${
+  encodeURIComponent(JSON.stringify({"name":manifest.name||manifest.title,"short_name":manifest["short-name"]||manifest.title,"start_url":manifest["start-url"],"display":manifest.display||"standalone","background_color":manifest["background-color"]||"white","theme_color":manifest["theme-color"]||manifest.accent,"description":manifest.description,"icons":[{"src":manifest.icon,"sizes":"192x192","type":"image/png"},{"src":manifest.icon,"sizes":"512x512","type":"image/png","purpose":"any maskable"}]}))
+}"><style>icon{display:flex;justify-content:center;align-items:center}icon>svg{width:100%;height:100%}</style>`
 ;[...header.children].forEach(e=>document.head.appendChild(e))
 
 

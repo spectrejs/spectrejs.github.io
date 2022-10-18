@@ -1,2 +1,0 @@
-SpectreJS - Dev info
----

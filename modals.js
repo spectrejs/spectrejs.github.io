@@ -1,33 +1,84 @@
-const modal=function(html,url=location.href){
-  let el=document.createElement("modal")
-  el.setAttribute("style","position:fixed;z-index:3;top:0;left:0;width:100%;height:100%;background:var(--shadow);overflow: auto;display:flex;flex-direction:column;align-items:flex-start;align-content:flex-start;justify-content:flex-start;flex:none")
-  el.setAttribute("url-scope",url)
-  el.setAttribute("onclick","if(event.composedPath()[0]===this)history.back()")
- el.innerHTML=html||""
- //evaluate modal scripts
- ;[...el.querySelectorAll("script")].forEach(e=> e.remove())
-  document.documentElement.appendChild(el)
- history.pushState(btoa(Math.random()),null,location.href)
- return el
-}
+const __templates={}
 
-const open=async function(url,opts=""){
-  url=new URL(url,location.href).href
-  let page=modal("<load -margin=auto >",url)
-  if(opts.includes("solid"))page.style.background="var(--background)"
-  if(opts.includes("frame")){
-    page.innerHTML=`<iframe src="${url}" -width=100% -height=100% -border=0 >`
-    } else {
-      if(sessionStorage[url])page.innerHTML=sessionStorage[url];
-    else {
-      let data=await fetch(url).catch(e=>null)
-      if(data===null||!data.ok)data="Failed to load"
-      else data=await data.text().catch(e=>"Failed to load")
-      if(data!=="Failed to load")sessionStorage[url]=data
-      page.innerHTML=data
-      
-    }}
-  return page }
+//save templates
+parser.push(function(el,attr){
+  
+  //inject icons
+  if(el.tagName=="ICON"&&el.children.length===0&&el.innerText){
+    attr.import=new URL(`./icons/${el.innerText.trim().replaceAll(" ","-")}.svg`,manifest.src).href
+  }
+  
+     //import external html snippets
+     if (attr.import) {
+       let open = el.getAttribute("import")||attr.import
+       if (open.startsWith("#")) setTimeout(e => {
+         if (open.replace("#", "") in __templates) {
+           let c = __templates[open.replace("#", "")]
+           el.innerHTML = c.html
+           if (c.style) el.setAttribute("style", c.style + ";" + (el.getAttribute("style") || ""))
+         }
+       }, 0)
+       else {
+         if (sessionStorage[open]) el.innerHTML = sessionStorage[open]
+         else fetch(open).then(e => e.ok ? e.text() : "not found")
+           .then(e => {
+             el.innerHTML = e
+             sessionStorage[open] = e
+           }).catch(e => el.innerHTML = e)
+       }
+     }
+  
+  if((el.tagName=="TEMPLATE"||el.tagName=="TEMP")&&el.id){
+    __templates[el.id]={
+      style:el.getAttribute("style")||"",
+      html:el.innerHTML
+    }
+    
+    el.remove()
+  }
+  
+  if("open" in attr){
+    el.onclick=e=>{
+      document.modal(el.getAttribute("open")||"",el)
+    }
+  }
+})
+
+//open object
+document.modal=function(open="",el=document.body){
+  //define modal element
+  let mod = document.createElement("modal")
+  mod.innerHTML = "<h1 -color=white -margin=auto>...</h1>"
+  mod.setAttribute("url-scope", el.closest("[url-scope]") ? el.closest("[url-scope]").getAttribute("url-scope") : location.href)
+  mod.setAttribute("onclick", "if(event.composedPath()[0]===this)history.back()")
+  mod.setAttribute("style", "position:fixed;z-index:3;top:0;left:0;width:100%;height:100%;background:#00000030;overflow: auto;display:flex;flex-direction:column;align-items:flex-start;align-content:flex-start;justify-content:flex-start;flex:none")
+  document.body.appendChild(mod)
+  
+  if (open.startsWith("#") && open.replace("#", "") in __templates) {
+    //if is inline modal
+    history.pushState(btoa(Math.random()), null, location.href)
+    let data = __templates[open.replace("#", "")]
+    mod.innerHTML = data.html || ""
+    mod.setAttribute("style", mod.getAttribute("style") + ";" + data.style)
+    document.body.appendChild(mod)
+  }
+  
+  
+  //if template is external
+  if (!open.startsWith("#")) {
+    mod.setAttribute("url-scope", open)
+    history.pushState(btoa(Math.random()), null, location.href)
+  
+    if (sessionStorage[open]) mod.innerHTML = sessionStorage[open]
+    else fetch(open).then(e => e.ok ? e.text() : undefined)
+      .then(e => {
+        mod.innerHTML = e
+        sessionStorage[open] = e
+      }).catch(e => mod.innerHTML = e)
+  
+  }
+  return mod
+}
 
 //on back press remove last added modal
 window.onpopstate=e=>{
@@ -35,5 +86,3 @@ window.onpopstate=e=>{
   let el=[...document.querySelectorAll("modal")].pop()
   if(el)el.remove()
 }
-
-

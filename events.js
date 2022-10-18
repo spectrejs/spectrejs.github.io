@@ -1,46 +1,53 @@
-parser.extend(function(el,attr){
+//handle events
+parser.push(function(el,attr){
   for(const prop in attr){
     let val=attr[prop].trim()
+    let [event, extend]=prop.split(".").map(e=>String(e))
     
-    if(prop.startsWith("on")){
-      let [event, extend]=prop.split(".")
-      el[event]=x=>{
+    //timer events
+    if(event.startsWith("after"))setTimeout(x=>__builder(val).apply(el,[{}]),(event.replace("after","")||"1")-0)
+    if(event.startsWith("every")){
+      let timer=setInterval(x=>__builder(val).apply(el,[{clear(){clearInterval(timer)}}]),(event.replace("every","")||"1000")-0)}
+    
+    
+    if(event.startsWith("on"))el[event]=x=>{
         if(extend=="prevent")x.preventDefault()
-        if(val in window)window[val].apply(el,[x])
-        else Function(`return async function(event){${val}}`)().apply(el,[x])
+        __builder(val).apply(el,[x])
         if(extend=="once")el[event]=e=>{/*removed*/}
       }
       
-      //custom events
+      //on enter pressed for inputs
       if(event=="onenter")el.onkeyup=x=>{
         if(extend=="prevent")x.preventDefault()
         if(x.keyCode==13){
-          x.value=el.value
-          if(val in window)window[val].apply(el,[x])
-          else Function(`return async function(event){${val}}`)().apply(el,[x])
+          __builder(val).apply(el,[x])
+          if(el.hasAttribute("clear"))el.value=""
           if(extend=="once")el[event]=e=>{/*removed*/}
         }
       }
       
-      if(event=="onitemclick")el.onclick=x=>{
-        if(x.composedPath()[0]!==el){
-          x.root=x.composedPath()[x.composedPath().indexOf(el)-1]
-          if(x.root){
-            x.bound=el.getAttribute("bind.local")||el.getAttribute("bind.session")||el.getAttribute("bind")
-            x.index=[...el.children].indexOf(x.root)
-            if(x.bound&&bind[x.bound]!==undefined&&typeof bind[x.bound]=="object"&&bind[x.bound]!==null&&bind[x.bound] instanceof Array)x.bind=bind[x.bound][x.index]
-          }
-          //when item is selected in a list
-          if (val in window) window[val].apply(el, [x])
-          else Function(`return async function(event){${val}}`)().apply(el, [x])
-          
-          
-          
-        }
-        
-      }
+      //on element mounted
+      if(event=="onmount")__builder(val).apply(el)
       
-    }
-  }
-  
-})
+      //on item selected in list, useful to handle dynamically added lists
+      if(event=="onitemclick")el.onclick=x=>{
+      if (extend == "prevent") x.preventDefault()
+      if (extend == "once") el[event] = e => {}
+      if (x.composedPath()[0] !== el) {
+        x.root = x.composedPath()[x.composedPath().indexOf(el) - 1]
+        x.index=[...el.children].indexOf(x.root)
+        x.value=window[el.id]
+        if(x.value&&typeof x.value=="object"&&x.value instanceof Array)x.value=x.value[x.index]
+        //when item is selected in a list
+        __builder(val).apply(el,[x])
+    }}
+    
+      
+    
+  }})
+
+const __builder=e=>{
+  if(e in window)return window[e]
+  else return Function(`return async function(event){${e}}`)()
+}
+

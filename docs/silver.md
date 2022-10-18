@@ -1,85 +1,42 @@
-SpectreJS - Cheatsheet
----
-
 ```html
-<script src=.../spectre.js
-  accent=color
-  theme=light|dark|system(default)
-  title="Spectre App"
-  desc="Powered by SpectreJS"
-  icon=/favicon.ico
-  color=#454545
-  foreground=#fcfcfc
-  background=#fff
-  shadow=#00000020
-  entry=location.origin
-  ui="button bar flex text"
-  worker="/path/to/service-worker"
-  ></script>
+<el 
 
-<element 
-#id 
--style=value -style=--css-variable
---css-variable=value 
+.class
+.binded.class
+-style-name=style-value
+--css-variable=variable-value
+:psuedo-selector="css:value"
+#id-and-bind-id
+style="css:value&selector=css:value  --- selectors are scoped"
 
-.class .binded.class 
-:type 
+onevent="handlerName or inline async script (event)"
+onitemclick="handler when item in list clicked (event.root,event.target,event.index,event.value)"
+onmount="handler when element mounted to dom"
+onenter="when an inputs enter key is pressed"
+clear="clears input on enter key pressed"
+back="onclick history.back"
+link="url to open"
+as="open url url as (_blank)"
 
-onevent=handler
-onevent.prevent=handler
-onevent.once=handler
+default="default value for bind"
+onbind="handler when bound"
+preview="if bind is an array, pick a single value(first|last|random|index)"
+join="intermediary value to join list binds"
+store="set get data from a storage paradigm (local|session|cookie|params)"
+fetch="fetch url and bind to data"
 
-custom events
-onitemclick=listItems
-onbind=onBind
-onenter=keyboardEnter
-back="onclick backs"
+open="popup modal data from url or template (#template-id)"
+import="import html from external source or template (#template-id)"
+after13="event after 13ms"
+every1000="event every 1000ms"
 
-bind=variableName
-bind.default=defaultValue
-bind.local=localStorageKey
-bind.session=sessionStorageKey
-bind.params=urlParameterKey
-bind.url=pathToBindable
-bind.preview=pickFromArray(first|last|random)
 
-template="html to be formatted"
 
-open=open(url)
-open.nav=window.open(url)
-open.frame=open(url,frame)
-open.solid=open(url,solid)
-
-/>
-
-<load></load>
-
-<icon>bootstrap icon name (fetched & injected)</icon>
-
-<script :module >
+>
+  {*} //bind the value itself
+  {name.first} //bind object vals
+  {emoji.2} //array value
   
-  open("url")
-  open("url","frame")
-  modal("html","url-scope")
-  
-  function onBack(){
-    //app on back press
-  }
-  
-  //add custom parsing
-  parser.extend(function customParser(element,attributes){})
-  //url parameters
-  app.params={URLParameters}
-  //app manifest
-  console.log(manifest)
-  
-  //access binds
-  bind.handler=value
-  
-</script>
-```
+</el>
 
-build to sjs
-```bash
-cd /sdcard/Android/data/io.spck/files/spectrejs.github.io && terser init.js parse.js bind.js sugar.js events.js icons.js misc.js modals.js -o spectre.js -c -m
 ```
